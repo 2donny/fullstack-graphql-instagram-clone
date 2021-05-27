@@ -14,13 +14,19 @@ const resolverFn: Resolver = async (_, {
     bio,
     avatar,
 }, {
-    loggedUser,
+    loggedInUser,
     client
 }) => {
-    const { filename, createReadStream } = await avatar;
-    const readStream = createReadStream();
-    const writeStream = createWriteStream(process.cwd() + '/uploads/' + filename);
-    readStream.pipe(writeStream);
+    let avatarUrl = null;
+    if(avatar) {
+        const { filename, createReadStream } = await avatar;
+        const uniqueFilename = `${loggedInUser.id}-${Date.now()}-${filename}`;
+        const readStream = createReadStream();
+        const writeStream = createWriteStream(process.cwd() + '/uploads/' + uniqueFilename);
+        readStream.pipe(writeStream);
+        console.log(uniqueFilename);
+        avatarUrl = `http://localhost:4000/static/${uniqueFilename}`
+    }
 
     let uglyPassword = null;
     if (newPassword) {
@@ -29,7 +35,7 @@ const resolverFn: Resolver = async (_, {
 
     const updatedUser = await client.user.update({
         where: {
-            id: loggedUser.id
+            id: loggedInUser.id
         },
         data: {
             firstName,
@@ -37,6 +43,7 @@ const resolverFn: Resolver = async (_, {
             userName,
             email,
             bio,
+            avatar: avatar && avatarUrl,
             ...(uglyPassword && {
                 password: uglyPassword
             })

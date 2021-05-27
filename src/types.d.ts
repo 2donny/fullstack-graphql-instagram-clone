@@ -1,7 +1,7 @@
 import { User, PrismaClient } from '@prisma/client';
 
 type Context = {
-  loggedUser: User;
+  loggedInUser: User;
   client: PrismaClient
 };
 

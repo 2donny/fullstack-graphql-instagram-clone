@@ -27,7 +27,7 @@ export const protectedResolver = (ourResolver: Resolver) => (
   context: any,
   info: any,
 ) => {
-  if (!context.loggedUser) {
+  if (!context.loggedInUser) {
     return {
       ok: false,
       error: 'You need to login.',
