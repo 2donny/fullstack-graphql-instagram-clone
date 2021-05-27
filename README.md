@@ -6,9 +6,12 @@
 - [x] See Profile
 - [x] Login
 - [x] Edit Profile
-- [ ] Follow User
-- [ ] Unfollower User
-- [ ] Change Avatar (Image Upload)
+- [x] Follow User
+- [x] Unfollower User
+- [x] See Followers / Pagination
+- [x] See Followings / Pagination
+- [x] Computed Fields
+- [x] Search User
 
 <br />
 
@@ -41,25 +44,25 @@ apollo-server-express로 express와 apollo-server를 connect 할 수 있다.
 (1) Installation
 
 ```javascript
-    import { ApolloServer } from 'apollo-server-express';
-    import express from 'express';
+import { ApolloServer } from 'apollo-server-express';
+import express from 'express';
 ```
 
 <br />
 (2) Setting up Apollo Server with Express.js
 
 ```javascript
-    const apollo = new ApolloServer({
-        typeDefs,
-        resolvers,
-    });
+const apollo = new ApolloServer({
+  typeDefs,
+  resolvers,
+});
 
-    const app = express();
-    apollo.applyMiddleware({ app });
+const app = express();
+apollo.applyMiddleware({ app });
 
-    app.listen({ port: 4000 }, () => {
-        console.log(`🚀Server is running! Listening on port 4000`);
-    });
+app.listen({ port: 4000 }, () => {
+  console.log(`🚀Server is running! Listening on port 4000`);
+});
 ```
 
 <br />
@@ -113,7 +116,7 @@ apollo-server-express로 express와 apollo-server를 connect 할 수 있다.
     });
 
 
-    // editProfileResolver.js    
+    // editProfileResolver.js
 
     const Resolvers = {
         type Mutation {
@@ -167,7 +170,7 @@ apollo-server-express로 express와 apollo-server를 connect 할 수 있다.
         return ourResolver(root, args, context, info);
     };
 
-    // ./profileResolver.ts 
+    // ./profileResolver.ts
     const resolverFn = async (_, { username, password }, { loggedUser, client}) => {
         ...
 
@@ -179,7 +182,7 @@ apollo-server-express로 express와 apollo-server를 connect 할 수 있다.
     // Resolver에서 HOF 작성 가능. 함수형 프로그래밍의 장점이 있다.
     export default {
         Mutation: {
-            editProfile:  protectedResolver(resolverFn), 
+            editProfile:  protectedResolver(resolverFn),
         }
     }
 ```
@@ -190,25 +193,23 @@ apollo-server-express로 express와 apollo-server를 connect 할 수 있다.
 
 ```typescript
 //  ./types.d.ts
-    import { User, PrismaClient } from '@prisma/client';
+import { User, PrismaClient } from '@prisma/client';
 
-    type Context = {
-        loggedUser: User;
-        client: PrismaClient
-    };
+type Context = {
+  loggedUser: User;
+  client: PrismaClient;
+};
 
-    export type Resolver = (
-        root: any,
-        args: any,
-        context: Context,
-        info: any,
-    ) => any;
+export type Resolver = (
+  root: any,
+  args: any,
+  context: Context,
+  info: any,
+) => any;
 
-    export type Resolvers = {
-        [key: string]: {
-            [key: string]: Resolver;
-        };
-    };
-
+export type Resolvers = {
+  [key: string]: {
+    [key: string]: Resolver;
+  };
+};
 ```
-
