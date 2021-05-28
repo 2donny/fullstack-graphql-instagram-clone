@@ -25,6 +25,15 @@ const resolvers: Resolvers = {
 
       return cnt === 0 ? false : true;
     },
+    photos: ({ id }, { page }, { client }) =>
+      client.user
+        .findUnique({
+          where: { id },
+        })
+        .photos({
+          take: 5,
+          skip: 5 * (page - 1),
+        }),
   },
 };
 

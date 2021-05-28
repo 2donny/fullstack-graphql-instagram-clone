@@ -24,7 +24,6 @@ const resolverFn: Resolver = async (_, {
         const readStream = createReadStream();
         const writeStream = createWriteStream(process.cwd() + '/uploads/' + uniqueFilename);
         readStream.pipe(writeStream);
-        console.log(uniqueFilename);
         avatarUrl = `http://localhost:4000/static/${uniqueFilename}`
     }
 

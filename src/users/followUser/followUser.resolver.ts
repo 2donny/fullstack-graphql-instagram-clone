@@ -19,8 +19,8 @@ const resolvers: Resolvers = {
           data: {
             followings: {
               connect: {
-                userName,
-              },
+                userName
+              }
             },
           },
         });
