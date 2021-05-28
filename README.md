@@ -13,7 +13,22 @@
 - [x] Computed Fields
 - [x] Search User
 
-<br />
+## Photos
+
+- [x] Upload Photo (Parse #)
+- [x] See Photo
+- [x] See Hashtags
+- [x] Search Photos
+- [ ] Edit Photo
+- [ ] Like / Unlike Photo
+- [ ] See Photo Likes
+- [ ] See Feed
+
+## Comments
+
+- [ ] Comment on Photo
+- [ ] Edit Comment
+- [ ] Delete Comment
 
 ## File directory
 
@@ -212,4 +227,69 @@ export type Resolvers = {
     [key: string]: Resolver;
   };
 };
+```
+
+## Trouble shooting
+
+## TIL
+
+(5/27) Prisma data model
+
+```javascript
+    model User {
+        photos Photo[]
+    }
+
+    model Photo {
+        user User    @relation(fields: [userId], references: [id])
+        userId Imt
+        hashtags Hashtag[]
+    }
+
+    model Hashtag {
+
+        photos Photo[]
+        hashtags String @unique
+    }
+
+```
+
+```javascript
+// uploadPhoto.resolver.ts
+await client.photo.create({
+  data: {
+    file,
+    caption,
+    user: {
+      connect: {
+        id: loogedInUser.id,
+      },
+    },
+  },
+});
+```
+
+1. Prisma model에서 field가 relation attribute일 때는 "connect" API로 두 model을 연결한다. connect는 존재하는 related record를 unique한 필드(id, username)을 가지고 연결한다.
+
+2. many to many relation에서는 "connectOrCreate" API를 사용하여 한 record가 관련된 여러개의 record와 연결될 수 있기에 [] 배열 사용이 가능하다.
+
+```javascript
+await client.photo.create({
+  data: {
+    file,
+    caption,
+  },
+  hashtags: {
+    connectOrCreate: [
+      {
+        where: { hashtag: '#hi' },
+        create: { hashtag: '#hi' },
+      },
+      {
+          where: { hashtag: '#developers' },
+          create: { hashtag: '#developers' },
+      },
+    ],
+  },
+});
 ```
