@@ -17,5 +17,15 @@ export default gql`
     hashtags: [Hashtag]
     createdAt: String!
     updatedAt: String!
+    isMine: Boolean!
+    likes: Int!
+    comments: Int!
+  }
+
+  type Like {
+    id: Int!
+    photo: Photo!
+    createdAt: String!
+    updatedAt: String!
   }
 `;

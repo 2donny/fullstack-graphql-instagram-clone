@@ -10,14 +10,7 @@ const resolvers: Resolvers = {
         if (caption) {
           hashtagsObj = processHashtags(caption);
         }
-
-        const user = await client.user.findMany({
-          where: {
-            
-          }
-        })
-        
-        return await client.photo.create({
+        const photo = await client.photo.create({
           data: {
             file,
             caption,
@@ -34,6 +27,10 @@ const resolvers: Resolvers = {
           },
         });
 
+        return {
+          ok: true,
+          photo
+        }
       },
     ),
   },
