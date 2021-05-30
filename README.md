@@ -19,16 +19,19 @@
 - [x] See Photo
 - [x] See Hashtags
 - [x] Search Photos
-- [ ] Edit Photo
-- [ ] Like / Unlike Photo
-- [ ] See Photo Likes
-- [ ] See Feed
+- [x] Edit Photo
+- [x] Like / Unlike Photo
+- [x] See Photo Likes
+- [x] See Feed
+- [x] Is Mine(delete photo)
+- [x] Comments number
+- [x] See Photo Comments
 
 ## Comments
 
-- [ ] Comment on Photo
+- [x] Comment on Photo
 - [ ] Edit Comment
-- [ ] Delete Comment
+- [ ] Delete Comment (Is Mine)
 
 ## File directory
 
