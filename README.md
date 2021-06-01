@@ -30,8 +30,17 @@
 ## Comments
 
 - [x] Comment on Photo
-- [ ] Edit Comment
-- [ ] Delete Comment (Is Mine)
+- [x] Edit Comment
+- [x] Delete Comment (Is Mine)
+
+## Refactor
+
+- [x] Mutation Response
+
+## Extras
+
+- [ ] S3 Image Upload
+- [ ] Direct Messages
 
 ## File directory
 
