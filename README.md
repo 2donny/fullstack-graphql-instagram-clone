@@ -39,8 +39,13 @@
 
 ## Extras
 
-- [ ] S3 Image Upload
-- [ ] Direct Messages
+- [x] S3 Image Upload
+
+## Direct Messages
+- [ ] Create Room
+- [ ] Get Room
+- [ ] Send Message 
+- [ ] Realtime Messages
 
 ## File directory
 
