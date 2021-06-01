@@ -21,7 +21,7 @@ const resolvers: Resolvers = {
         };
 
         const like = await client.like.findUnique({
-          where: likeWhere,
+          where: likeWhere
         });
 
         if (like) {

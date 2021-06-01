@@ -15,11 +15,7 @@ const resolvers: Resolvers = {
       const cnt = await client.user.count({
         where: {
           userName: loggedInUser.userName,
-          followings: {
-            some: {
-              id,
-            },
-          },
+          
         },
       });
 

@@ -24,5 +24,5 @@ apollo.applyMiddleware({ app });
 app.use('/static', express.static('uploads'))
 
 app.listen({ port: app.get('PORT') }, () => {
-  console.log(`🚀Server is running! Listening on port ${app.get('PORT')}`);
+  console.log(`✅ Server listenting on http://localhost:${app.get('PORT')} 🚀`);
 });

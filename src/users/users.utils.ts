@@ -28,10 +28,15 @@ export const protectedResolver = (ourResolver: Resolver) => (
   info: any,
 ) => {
   if (!context.loggedInUser) {
-    return {
-      ok: false,
-      error: 'You need to login.',
-    };
+    const query = info.operation.operation === 'query';
+    if(query) {
+      return null;
+    }else {
+      return {
+        ok: false,
+        error: 'You need to login.',
+      };
+    }
   }
   return ourResolver(root, args, context, info);
 };

@@ -1,8 +1,10 @@
 import { User, PrismaClient } from '@prisma/client';
+import { PrismaDelete } from '@paljs/plugins';
 
 type Context = {
   loggedInUser: User;
   client: PrismaClient
+  prismaDelete: PrismaDelete
 };
 
 export type Resolver = (
