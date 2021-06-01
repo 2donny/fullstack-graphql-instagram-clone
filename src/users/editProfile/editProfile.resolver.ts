@@ -4,6 +4,7 @@ import {
 } from "../users.utils";
 import { Resolver } from '../../types';
 import { createWriteStream } from 'fs';
+import { uploadToS3 } from '../../shared/shared.utils';
 
 const resolverFn: Resolver = async (_, {
     firstName,
@@ -19,12 +20,13 @@ const resolverFn: Resolver = async (_, {
 }) => {
     let avatarUrl = null;
     if(avatar) {
-        const { filename, createReadStream } = await avatar;
-        const uniqueFilename = `${loggedInUser.id}-${Date.now()}-${filename}`;
-        const readStream = createReadStream();
-        const writeStream = createWriteStream(process.cwd() + '/uploads/' + uniqueFilename);
-        readStream.pipe(writeStream);
-        avatarUrl = `http://localhost:4000/static/${uniqueFilename}`
+        avatarUrl = await uploadToS3(avatar, loggedInUser.id, "avatars");
+        // const { filename, createReadStream } = await avatar;
+        // const uniqueFilename = `${loggedInUser.id}-${Date.now()}-${filename}`;
+        // const readStream = createReadStream();
+        // const writeStream = createWriteStream(process.cwd() + '/uploads/' + uniqueFilename);
+        // readStream.pipe(writeStream);
+        // avatarUrl = `http://localhost:4000/static/${uniqueFilename}`
     }
 
     let uglyPassword = null;
