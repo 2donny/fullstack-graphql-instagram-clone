@@ -42,9 +42,10 @@
 - [x] S3 Image Upload
 
 ## Direct Messages
+
 - [ ] Create Room
 - [ ] Get Room
-- [ ] Send Message 
+- [ ] Send Message
 - [ ] Realtime Messages
 
 ## File directory
@@ -250,7 +251,7 @@ export type Resolvers = {
 
 ## TIL
 
-(5/27) Prisma data model
+5/27 - Prisma data model
 
 ```javascript
     model User {
@@ -303,10 +304,40 @@ await client.photo.create({
         create: { hashtag: '#hi' },
       },
       {
-          where: { hashtag: '#developers' },
-          create: { hashtag: '#developers' },
+        where: { hashtag: '#developers' },
+        create: { hashtag: '#developers' },
       },
     ],
   },
 });
 ```
+
+<br />
+
+5/31 - On delete cascade
+
+- Prisma는 아직 related field에 대한 Cascade deletion 기능을 개발중이다. Prisma 팀이 권장하는 [해결책](https://www.prisma.io/docs/guides/database/advanced-database-tasks/cascading-deletes/postgresql)은 다음과 같다.
+
+  - SQL문으로 DB table을 만들 때 foreign key의 Constraint를 직접 설정한다.
+  - [@paljs/plugin](https://paljs.com/plugins/delete) 에서 제공하는 PrismaDelete 클래스의 onDelete 함수를 사용하여 Cascade deletion을 할 수 있다.
+  - 직접 related model의 field 값들을 transaction으로 삭제한다. 예시는 다음과 같다.
+
+  ```javascript
+  const deleteComments = client.comment.deleteMany({
+    where: {
+      photoId,
+    },
+  });
+
+  const deletePhoto = client.photo.delete({
+    where: {
+      id: photoId,
+    },
+  });
+
+  const transaction = await client.$transaction([
+    deleteComments,
+    deletePhoto,
+  ]);
+  ```
+나는 위의 3가지 방법 중에 3번을 택했는데 그 이유는 먼저 paljs를 쓰지 않은 이유는 prisma팀이 작성한 코드가 아니기 때문이다. DB의 삭제를 담당하는 ORM의 신뢰도는 매우 중요하기 때문에 transaction 기능을 사용해서 귀찮더라도 관련된 모든 field들을 먼저 삭제하고 해당 model도 삭제하는 방법을 택했다. 물론 이 방법은 DB Schema의 복잡도가 커질수록 일일이 삭제하는 것은 생산성과 최적화를 방해하기 때문에 추후에는 직접 DB 테이블을 설정하는 것이 좋아보인다.
