@@ -4,13 +4,15 @@
 /node_modules
 /.pnp
 .pnp.js
+/.history
 
 # testing
 /coverage
-
+/tsconfig.json
+yarn.lock
 # production
 /build
-
+/.vscode
 # misc
 .DS_Store
 .env.local
