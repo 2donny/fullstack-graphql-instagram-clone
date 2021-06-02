@@ -43,10 +43,12 @@
 
 ## Direct Messages
 
-- [ ] Create Room
-- [ ] Get Room
-- [ ] Send Message
-- [ ] Realtime Messages
+- [x] See Rooms
+- [x] Send Messages (Create Room)
+- [x] See Room
+- [x] Read Message
+- [x] Computed fields
+- [x] Realtime Messages
 
 ## File directory
 
@@ -316,11 +318,13 @@ await client.photo.create({
 
 5/31 - On delete cascade
 
-- Prisma는 아직 related field에 대한 Cascade deletion 기능을 개발중이다. Prisma 팀이 권장하는 [해결책](https://www.prisma.io/docs/guides/database/advanced-database-tasks/cascading-deletes/postgresql)은 다음과 같다.
+Prisma는 아직 related field에 대한 Cascade deletion 기능을 개발중이다. Prisma 팀이 권장하는 [해결책](https://www.prisma.io/docs/guides/database/advanced-database-tasks/cascading-deletes/postgresql)은 다음과 같다.
 
   - SQL문으로 DB table을 만들 때 foreign key의 Constraint를 직접 설정한다.
   - [@paljs/plugin](https://paljs.com/plugins/delete) 에서 제공하는 PrismaDelete 클래스의 onDelete 함수를 사용하여 Cascade deletion을 할 수 있다.
   - 직접 related model의 field 값들을 transaction으로 삭제한다. 예시는 다음과 같다.
+
+  <br />
 
   ```javascript
   const deleteComments = client.comment.deleteMany({
@@ -340,4 +344,46 @@ await client.photo.create({
     deletePhoto,
   ]);
   ```
-나는 위의 3가지 방법 중에 3번을 택했는데 그 이유는 먼저 paljs를 쓰지 않은 이유는 prisma팀이 작성한 코드가 아니기 때문이다. DB의 삭제를 담당하는 ORM의 신뢰도는 매우 중요하기 때문에 transaction 기능을 사용해서 귀찮더라도 관련된 모든 field들을 먼저 삭제하고 해당 model도 삭제하는 방법을 택했다. 물론 이 방법은 DB Schema의 복잡도가 커질수록 일일이 삭제하는 것은 생산성과 최적화를 방해하기 때문에 추후에는 직접 DB 테이블을 설정하는 것이 좋아보인다.
+  나는 위의 3가지 방법 중에 3번을 택했다. 먼저 paljs를 쓰지 않은 이유는 prisma팀이 작성한 코드가 아니기 때문이다. DB의 삭제를 담당하는 ORM의 신뢰도는 매우 중요하기 때문에 transaction 기능을 사용해서 귀찮더라도 관련된 모든 field들을 먼저 삭제하고 해당 model도 삭제하는 방법을 택했다. 물론 이 방법은 DB Schema의 복잡도가 커질수록 일일이 삭제하는 것은 생산성과 최적화를 방해하기 때문에 추후에는 직접 DB 테이블을 설정하는 것이 좋아보인다.
+
+<br />
+
+6/02 - Subscription
+
+ Subscriptions are long-lasting GraphQL read operations that usually use the WebSocket protocol instead of HTTP.
+  
+
+```javascript
+  const apollo = new ApolloServer({
+  ... 
+
+  context: async (ctx) => {
+    if (ctx.req) { // http 프로토콜로 통신 시 ctx.req가 존재.
+      return {
+        loggedInUser: await getUser(ctx.req.headers.token as string),
+        client,
+      };
+    } else { // ws 프로토콜로 통신 시 ctx.connection.context로 밑의 subscriptions의 리턴 값에 접근 할 수 있다.
+      return {
+        loggedInUser: ctx.connection.context.loggedInUser,
+      };
+    }
+  },
+  subscriptions: {
+    onConnect: async (params: any) => { // onConnect gives us Reques Headers. This function is called only once, when a users connects to a website. 
+      if (!params.token) {
+        throw new Error("You can't listen.");
+      }
+      const loggedInUser = await getUser(params.token);
+      return {
+        loggedInUser,
+      };
+    },
+  },
+});
+```
+- HTTP는 stateless protocol로서 요청시에 TCP connection을 생성하고 그 채널의 Bandwidth 만큼 request를 multiplexing하여 보낸다. 요청이 끝나면 conenction을 닫는다.
+  - HTTP 통신시 모든 요청들은 ApolloServer의 context 프로퍼티의 ctx.req로 값이 들어온다. 
+
+- 반면에 Websocket은 UDP 소켓 통신 방식이고 최초에 연결한 후에 서버 애플리케이션이 terminated될 때 까지 connection이 유지된다. 
+  - Web socket 통신 시 ctx.req는 undefined이고 대신 subscriptions property의 onConnect의 리턴 값이 context property의 ctx.connection.context 객체에 추가된다. (위 코드의 주석 참조)
