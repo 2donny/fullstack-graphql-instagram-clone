@@ -5,7 +5,7 @@ const resolvers: Resolvers = {
     searchUser: async (_, { keyword, page }, { client }) =>
       client.user.findMany({
         where: {
-          userName: {
+          username: {
             mode: 'insensitive',
             startsWith: keyword.toLowerCase(),
           },

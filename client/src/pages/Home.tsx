@@ -1,14 +1,15 @@
-import { isLoggedInVar } from '../Apollo';
+import { isLoggedInVar, logUserOut } from '../Apollo';
 import styled from 'styled-components';
+import PageTitle from '../components/PageTitle';
 
-export interface Props {
-}
+export interface Props {}
 
 export default function Home (props: Props) {
   return (
     <Container>
+      <PageTitle title="Home"/>
       <Title>Home</Title>
-      <button onClick={() => isLoggedInVar(false)}>Log out</button>
+      <button onClick={() => logUserOut()}>Log out</button>
     </Container>
   );
 }

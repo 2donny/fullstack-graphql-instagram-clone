@@ -6,7 +6,6 @@ import { typeDefs, resolvers } from './schema';
 import { getUser } from './users/users.utils';
 import client from './client';
 import logger from 'morgan';
-import pubsub from './pubsub';
 
 const apollo = new ApolloServer({
   typeDefs,

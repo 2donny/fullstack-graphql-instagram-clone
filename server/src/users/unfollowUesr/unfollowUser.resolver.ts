@@ -4,8 +4,8 @@ import { protectedResolver } from '../users.utils';
 const resolvers: Resolvers = {
   Mutation: {
     unfollowUser: protectedResolver(
-      async (_, { userName }, { client, loggedInUser }) => {
-        const ok = await client.user.findUnique({ where: { userName } });
+      async (_, { username }, { client, loggedInUser }) => {
+        const ok = await client.user.findUnique({ where: { username } });
         if (!ok) {
           return {
             ok: false,
@@ -18,7 +18,7 @@ const resolvers: Resolvers = {
           data: {
             followings: {
               disconnect: {
-                userName
+                username
               }
             }
           }

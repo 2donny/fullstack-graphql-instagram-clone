@@ -2,8 +2,8 @@ import { Resolvers } from '../../types';
 
 const resolvers: Resolvers = {
   Query: {
-    seeFollowings: async (_, { userName, lastId }, { client }) => {
-      const ok = await client.user.findUnique({ where: { userName } });
+    seeFollowings: async (_, { username, lastId }, { client }) => {
+      const ok = await client.user.findUnique({ where: { username } });
       if (!ok) {
         return {
           ok: false,
@@ -12,7 +12,7 @@ const resolvers: Resolvers = {
       }
 
       const followings = await client.user
-        .findUnique({ where: { userName } })
+        .findUnique({ where: { username } })
         .followings({
           ...(lastId && { cursor: { id: lastId }, skip: 1 }),
           take: 5,

@@ -1,11 +1,9 @@
-import * as React from 'react';
+import PageTitle from '../components/PageTitle';
 
-export interface Props {
-}
-
-export default function NotFound (props: Props) {
+export default function NotFound () {
   return (
     <div>
+        <PageTitle title="Not found"/>
         <h1>404 Not Found.</h1>
     </div>
   );

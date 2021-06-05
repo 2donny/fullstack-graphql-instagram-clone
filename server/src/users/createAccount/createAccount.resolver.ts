@@ -5,7 +5,7 @@ const resolvers: Resolvers = {
   Mutation: {
     createAccount: async (
       _,
-      { firstName, lastName, userName, email, password },
+      { name, username, email, password },
       { client },
     ) => {
       // check if userName or email are already on DB.
@@ -17,8 +17,8 @@ const resolvers: Resolvers = {
                 email,
               },
               {
-                userName,
-              },
+                username
+              }
             ],
           },
         });
@@ -28,9 +28,8 @@ const resolvers: Resolvers = {
         const hashedPassword = await bcrypt.hash(password, 10);
         await client.user.create({
           data: {
-            userName,
-            firstName,
-            lastName,
+            username,
+            name,
             email,
             password: hashedPassword,
           },

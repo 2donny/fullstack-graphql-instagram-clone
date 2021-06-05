@@ -7,9 +7,8 @@ import { createWriteStream } from 'fs';
 import { uploadToS3 } from '../../shared/shared.utils';
 
 const resolverFn: Resolver = async (_, {
-    firstName,
-    lastName,
-    userName,
+    name,
+    username,
     email,
     password: newPassword,
     bio,
@@ -39,10 +38,9 @@ const resolverFn: Resolver = async (_, {
             id: loggedInUser.id
         },
         data: {
-            firstName,
-            lastName,
-            userName,
+            name,
             email,
+            username,
             bio,
             avatar: avatar && avatarUrl,
             ...(uglyPassword && {

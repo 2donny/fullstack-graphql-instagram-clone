@@ -11,9 +11,9 @@ const SFormBox = styled(BaseBox)`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: #fff;
   padding: 35px 40px 25px 40px;
   margin: 0 0 10px;
+  background-color: ${props => props.theme.bgColor};
   form {
     display: flex;
     flex-direction: column;
