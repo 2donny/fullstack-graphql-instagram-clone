@@ -3,20 +3,21 @@ import reset from 'styled-reset';
 
 const commonTheme = {
   accent: '#0095f6',
-  errorMsgColor: '#ed4956',
 };
 
 export const lightTheme: DefaultTheme = {
   ...commonTheme,
-  bgColor: '#fff',
+  bgColor: '#fafafa',
   borderColor: 'rgb(219, 219, 219)',
   color: 'rgb(38, 38, 38)',
+  errorMsgColor: '#ed4956',
 };
 export const darkTheme: DefaultTheme = {
   ...commonTheme,
   bgColor: '#2c2c2c',
   borderColor: '#1c1c1c',
   color: 'white',
+  errorMsgColor: '#fff',
 };
 
 export const GlobalStyles = createGlobalStyle`
