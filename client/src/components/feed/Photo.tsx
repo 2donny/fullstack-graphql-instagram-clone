@@ -11,7 +11,6 @@ import { faHeart as SolidHeart } from '@fortawesome/free-solid-svg-icons';
 import { FatText } from '../../components/shared';
 import { useMutation, gql, DataProxy } from '@apollo/client';
 import type { PhotoTypes, MutationResponse } from '../../shared/types';
-import { FEED_QUERY } from '../../pages/Home';
 
 interface Props extends PhotoTypes {}
 
@@ -30,7 +29,17 @@ const TOGGLE_LIKE_PHOTO_MUTATION = gql`
   }
 `;
 
-export default function Photo({ id, user, file, isLiked, likes }: Props) {
+export default function Photo({
+  id,
+  user,
+  file,
+  caption,
+  isLiked,
+  likes,
+  createdAt,
+  commentNumber,
+  comments,
+}: Props) {
   const [toggleLike] = useMutation<
     ToggleLikeMutationResult['data'],
     { id: number }
@@ -45,14 +54,16 @@ export default function Photo({ id, user, file, isLiked, likes }: Props) {
         },
       } = result;
       if (ok) {
+        const fragmentId = `Photo:${id}`;
+        const fragment = gql`
+          fragment name on Photo {
+            isLiked
+            likes
+          }
+        `;
         cache.writeFragment({
-          id: `Photo:${id}`,
-          fragment: gql`
-            fragment TL on Photo {
-              isLiked
-              likes
-            }
-          `,
+          id: fragmentId,
+          fragment: fragment,
           data: {
             isLiked: !isLiked,
             likes: isLiked ? likes! - 1 : likes! + 1,
@@ -99,11 +110,47 @@ export default function Photo({ id, user, file, isLiked, likes }: Props) {
             <FontAwesomeIcon icon={faBookmark} />
           </div>
         </PhotoActions>
-        {likes !== 0 &&  <Likes>좋아요 {likes}개</Likes>}
+        <Likes>{likes !== 0 && `좋아요 ${likes}개`}</Likes>
+        <Comments>
+          <Comment>
+            <FatText>{user?.username}</FatText>
+            <CommentCaption>{caption}</CommentCaption>
+          </Comment>
+          <CommentCount>
+            {commentNumber !== 0 ? `댓글 ${commentNumber}개 모두 보기` : null}
+          </CommentCount>
+          {comments?.map((comment) => (
+            <Comment key={comment.id}>
+              <FatText>{comment.user?.username}</FatText>
+              <CommentCaption>{comment.payload}</CommentCaption>
+              {comment.payload}
+            </Comment>
+          ))}
+        </Comments>
       </PhotoData>
     </PhotoContainer>
   );
 }
+
+const CommentCount = styled.span`
+  color: #8e8e8e;
+  margin-bottom: 4px;
+  display: block;
+  font-size: 14px;
+  cursor: pointer;
+`;
+
+const Comments = styled.div`
+  margin-top: 10px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+`;
+const Comment = styled.div`
+    margin: 8px 0;
+`;
+const CommentCaption = styled.span`
+  margin-left: 5px;
+`;
+
 const PhotoContainer = styled.div`
   background-color: #fff;
   border-radius: 3px;

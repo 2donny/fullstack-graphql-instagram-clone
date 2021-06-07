@@ -16,10 +16,22 @@ export const FEED_QUERY = gql`
       file
       caption
       likes
-      comments
+      commentNumber
       createdAt
       isMine
       isLiked
+      comments {
+        id
+        user {
+          username
+          avatar
+          isMe
+          createdAt
+        }
+        payload
+        isMine
+        createdAt
+      }
     }
   }
 `;
@@ -32,6 +44,8 @@ export default function Home() {
   });
 
   if (!data?.seeFeed) return null;
+
+  console.log(data?.seeFeed);
 
   return (
     <Container>

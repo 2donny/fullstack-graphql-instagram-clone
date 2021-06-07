@@ -34,7 +34,8 @@ export interface PhotoTypes {
   isMine?: boolean;
   likes?: number;
   isLiked?: boolean;
-  comments?: number;
+  commentNumber?: number;
+  comments?: [CommentTypes]
 }
 
 export interface LikeTypes {
@@ -51,4 +52,14 @@ export interface HashtagTypes {
   totalPhotos?: number;
   createdAt?: string;
   updatedAt?: string;
+}
+
+export interface CommentTypes {
+  id?: number
+  user?: UserTypes
+  photo?: PhotoTypes
+  payload?: string
+  isMine?: boolean
+  createdAt?: string
+  updatedAt?: string
 }
