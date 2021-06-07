@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import Avatar from '../../components/Avatar';
+import Comments from './Comments';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faHeart,
@@ -36,7 +37,6 @@ export default function Photo({
   caption,
   isLiked,
   likes,
-  createdAt,
   commentNumber,
   comments,
 }: Props) {
@@ -111,45 +111,16 @@ export default function Photo({
           </div>
         </PhotoActions>
         <Likes>{likes !== 0 && `좋아요 ${likes}개`}</Likes>
-        <Comments>
-          <Comment>
-            <FatText>{user?.username}</FatText>
-            <CommentCaption>{caption}</CommentCaption>
-          </Comment>
-          <CommentCount>
-            {commentNumber !== 0 ? `댓글 ${commentNumber}개 모두 보기` : null}
-          </CommentCount>
-          {comments?.map((comment) => (
-            <Comment key={comment.id}>
-              <FatText>{comment.user?.username}</FatText>
-              <CommentCaption>{comment.payload}</CommentCaption>
-              {comment.payload}
-            </Comment>
-          ))}
-        </Comments>
+        <Comments
+          author={user?.username!}
+          caption={caption!}
+          commentNumber={commentNumber!}
+          comments={comments!}
+        />
       </PhotoData>
     </PhotoContainer>
   );
 }
-
-const CommentCount = styled.span`
-  color: #8e8e8e;
-  margin-bottom: 4px;
-  display: block;
-  font-size: 14px;
-  cursor: pointer;
-`;
-
-const Comments = styled.div`
-  margin-top: 10px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-`;
-const Comment = styled.div`
-    margin: 8px 0;
-`;
-const CommentCaption = styled.span`
-  margin-left: 5px;
-`;
 
 const PhotoContainer = styled.div`
   background-color: #fff;
