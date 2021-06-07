@@ -28,10 +28,36 @@ const resolvers: Resolvers = {
         return userId === loggedInUser.id;
       },
     ),
-    comments: async ({ id }, _, { client }) =>
-      client.comment.count({
-        where: { photoId: id },
-      }),
+    isLiked: protectedResolver(async ({ id }, _, { client, loggedInUser }) => {
+      const liked = await client.photo.findFirst({
+        where: {
+          id,
+          likes: {
+            some: {
+              userId: loggedInUser.id,
+            },
+          },
+        },
+      });
+      if (liked) return true;
+      else return false;
+    }),
+    commentNumber: async ({ id }, _, { client }) => {
+      const comments = await client.photo
+        .findUnique({ where: { id }, select: { id: true } })
+        .comments();
+      return comments.length;
+    },
+    comment: async ({ id }, _, { client }) => {
+      const comments = await client.photo
+        .findUnique({ where: { id } })
+        .comments({
+          include: {
+            user: true,
+          },
+        });
+      return comments;
+    },
   },
   Hashtag: {
     photos: async ({ id }, { page }) => {
