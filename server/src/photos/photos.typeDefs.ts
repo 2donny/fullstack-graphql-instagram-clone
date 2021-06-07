@@ -19,7 +19,9 @@ export default gql`
     updatedAt: String!
     isMine: Boolean!
     likes: Int!
-    comments: Int!
+    isLiked: Boolean!
+    commentNumber: Int!
+    comment: [Comment]!
   }
 
   type Like {
