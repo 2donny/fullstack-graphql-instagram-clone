@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const SFormError = styled.span`
-  color: tomato;
+  color: ${props => props.theme.errorMsgColor};
   font-size: 12px;
   font-weight: 600;
   margin: 3px;
