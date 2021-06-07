@@ -1,4 +1,4 @@
-import { useState } from 'react'; 
+import { useState } from 'react';
 import {
   faFacebookSquare,
   faInstagram,
@@ -29,6 +29,7 @@ interface LoginFormField {
 interface LocationState {
   username: string;
   password: string;
+  message: string;
 }
 
 const LOGIN_MUTATION = gql`
@@ -43,7 +44,7 @@ const LOGIN_MUTATION = gql`
 
 export default function Login() {
   const location = useLocation<LocationState>();
-  const [reqErrorMessage, setReqErrorMessage] = useState<string>("");
+  const [reqErrorMessage, setReqErrorMessage] = useState<string>('');
 
   const {
     register,
@@ -64,10 +65,11 @@ export default function Login() {
       login: { ok, error, token },
     } = data;
     if (!ok) {
-      setReqErrorMessage(error!);
-      return null;
+      return setReqErrorMessage(error!);
     }
-    logUserIn(token!);
+    if (token) {
+      logUserIn(token!);
+    }
   };
 
   const [login, { loading }] = useMutation<
@@ -78,7 +80,6 @@ export default function Login() {
   });
 
   const onSubmitValid = (data: LoginFormField) => {
-    console.log(loading);
     if (loading) return null;
     login({
       variables: {
@@ -98,6 +99,7 @@ export default function Login() {
           size="3x"
         />
         <Title>Instagram</Title>
+        <Notification>{location?.state?.message}</Notification>
         <form onSubmit={handleSubmit(onSubmitValid)}>
           <Input
             {...register('username', {
@@ -150,6 +152,10 @@ export default function Login() {
     </AuthLayout>
   );
 }
+
+const Notification = styled.div`
+  color: #2ecc71;
+`;
 
 export const ErrorMessage = styled(SFormError)`
   font-size: 15px;

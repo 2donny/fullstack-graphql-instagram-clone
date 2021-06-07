@@ -57,17 +57,11 @@ export default function SignUp() {
     });
   };
 
-  const onError = (error: any) => {
-    console.log(error);
-    alert(error);
-  };
-
   const [createAccount, { loading }] = useMutation<
   { createAccount: MutationResponse },
   SignUpFormField
   >(CREATE_ACCOUNT_MUTATION, {
     onCompleted,
-    onError,
   });
 
   const {
@@ -88,8 +82,6 @@ export default function SignUp() {
       }
     });
   };
-
-  console.log(errors);
 
   return (
     <AuthLayout>
@@ -115,7 +107,7 @@ export default function SignUp() {
               },
             })}
             type="text"
-            placeholder="휴대폰 번호 또는 이메일 주소"
+            placeholder="이메일 주소"
             hasError={Boolean(errors?.email)}
           />
           <FormError message={errors?.email?.message} />
