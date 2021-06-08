@@ -1,34 +1,19 @@
-import styled from 'styled-components';
-import Avatar from '../../components/Avatar';
-import Comments from './Comments';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faHeart,
   faComment,
   faPaperPlane,
   faBookmark,
 } from '@fortawesome/free-regular-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart as SolidHeart } from '@fortawesome/free-solid-svg-icons';
 import { FatText } from '../../components/shared';
-import { useMutation, gql, DataProxy } from '@apollo/client';
-import type { PhotoTypes, MutationResponse } from '../../shared/types';
+import { PhotoTypes } from '../../shared/types';
+import { useToggleLikePhotoMutation } from '../../generated/ApolloComponents';
+import styled from 'styled-components';
+import Avatar from '../../components/Avatar';
+import Comments from './Comments';
 
-interface Props extends PhotoTypes {}
-
-interface ToggleLikeMutationResult {
-  data: {
-    toggleLikePhoto: MutationResponse;
-  };
-}
-
-const TOGGLE_LIKE_PHOTO_MUTATION = gql`
-  mutation toggleLikePhoto($id: Int!) {
-    toggleLikePhoto(id: $id) {
-      ok
-      error
-    }
-  }
-`;
+type Props = Partial<PhotoTypes>;
 
 export default function Photo({
   id,
@@ -40,61 +25,38 @@ export default function Photo({
   commentNumber,
   comments,
 }: Props) {
-  const [toggleLike] = useMutation<
-    ToggleLikeMutationResult['data'],
-    { id: number }
-  >(TOGGLE_LIKE_PHOTO_MUTATION, {
-    variables: {
-      id: id!,
-    },
-    update(cache: DataProxy, result: ToggleLikeMutationResult | any) {
-      const {
-        data: {
-          toggleLikePhoto: { ok },
-        },
-      } = result;
-      if (ok) {
-        const fragmentId = `Photo:${id}`;
-        const fragment = gql`
-          fragment name on Photo {
-            isLiked
-            likes
-          }
-        `;
-        cache.writeFragment({
-          id: fragmentId,
-          fragment: fragment,
-          data: {
-            isLiked: !isLiked,
-            likes: isLiked ? likes! - 1 : likes! + 1,
+  const toggleLike = useToggleLikePhotoMutation();
+  const toggleLikeOptions = {
+    variables: { id: id! },
+    update: (cache: any) => {
+      const photoId = `Photo:${id}`;
+      cache.modify({
+        id: photoId,
+        fields: {
+          isLiked(prev: boolean) {
+            return !prev;
           },
-        });
-      }
+          likes(prev: number) {
+            if (isLiked) return prev - 1;
+            else return prev + 1;
+          },
+        },
+      });
     },
-  });
-
+  };
   return (
     <PhotoContainer>
       <PhotoHeader>
         <Avatar lg url={user?.avatar} />
         <Username>{user?.username}</Username>
       </PhotoHeader>
-      <PhotoFile
-        onClick={() => {
-          toggleLike({
-            variables: {
-              id: id!,
-            },
-          });
-        }}
-        src={file}
-      />
+      <PhotoFile onClick={() => toggleLike(toggleLikeOptions)} src={file} />
       <PhotoData>
         <PhotoActions>
           <div>
             <PhotoAction>
               <FontAwesomeIcon
-                onClick={() => toggleLike()}
+                onClick={() => toggleLike(toggleLikeOptions)}
                 style={{ color: isLiked ? 'tomato' : 'inherit' }}
                 icon={isLiked ? SolidHeart : faHeart}
               />
@@ -114,6 +76,7 @@ export default function Photo({
         <Comments
           author={user?.username!}
           caption={caption!}
+          photoId={id!}
           commentNumber={commentNumber!}
           comments={comments!}
         />
