@@ -2,50 +2,20 @@ import styled from 'styled-components';
 import PageTitle from '../components/PageTitle';
 import Header from '../components/Header';
 import Photo from '../components/feed/Photo';
-import { gql, useQuery } from '@apollo/client';
-import type { PhotoTypes } from '../shared/types';
-
-export const FEED_QUERY = gql`
-  query seeFeed($page: Int!) {
-    seeFeed(page: $page) {
-      id
-      user {
-        username
-        avatar
-      }
-      file
-      caption
-      likes
-      commentNumber
-      createdAt
-      isMine
-      isLiked
-      comments {
-        id
-        user {
-          username
-          avatar
-          isMe
-          createdAt
-        }
-        payload
-        isMine
-        createdAt
-      }
-    }
-  }
-`;
+import { useSeeFeedQuery } from '../generated/ApolloComponents';
 
 export default function Home() {
-  const { data } = useQuery<{ seeFeed: [PhotoTypes] }, { page: number }>(FEED_QUERY, {
+  const { data, error, loading } = useSeeFeedQuery({
     variables: {
-      page: 1
+      page: 1,
     },
   });
 
   if (!data?.seeFeed) return null;
-
   console.log(data?.seeFeed);
+
+  if (loading) return <p>로딩중...</p>;
+  if (error) return <p>에러 발생..</p>;
 
   return (
     <Container>
