@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import PageTitle from '../components/PageTitle';
 import Header from '../components/Header';
 import Photo from '../components/feed/Photo';
+import Layout from '../components/Layout';
 import { useSeeFeedQuery } from '../generated/ApolloComponents';
 
 export default function Home() {
@@ -20,10 +21,11 @@ export default function Home() {
   return (
     <Container>
       <PageTitle title="Home" />
-      <Header />
-      {data?.seeFeed.map((photo) => (
-        <Photo key={photo.id} {...photo} />
-      ))}
+      <Layout>
+        {data?.seeFeed.map((photo) => (
+          <Photo key={photo.id} {...photo} />
+        ))}
+      </Layout>
     </Container>
   );
 }

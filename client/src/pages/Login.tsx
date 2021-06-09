@@ -16,7 +16,7 @@ import FormError, { SFormError } from '../components/auth/FormError';
 import PageTitle from '../components/PageTitle';
 import routes from '../routes';
 import { gql, useMutation, useReactiveVar } from '@apollo/client';
-import { darkModeVar, logUserIn } from '../Apollo';
+import { darkModeVar, logUserIn } from '../graphql/Apollo';
 import { useLocation } from 'react-router-dom';
 import { MutationResponse } from '../shared/types';
 
@@ -50,7 +50,6 @@ export default function Login() {
     register,
     handleSubmit,
     formState: { errors, isValid },
-    setError,
   } = useForm<LoginFormField>({
     mode: 'onChange',
     defaultValues: {
@@ -60,7 +59,6 @@ export default function Login() {
   });
 
   const onCompleted = (data: { login: MutationResponse }) => {
-    console.log(data);
     const {
       login: { ok, error, token },
     } = data;
