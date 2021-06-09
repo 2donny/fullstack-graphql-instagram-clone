@@ -4,7 +4,6 @@ import { useForm } from 'react-hook-form';
 import { useCreateCommentMutation } from '../../generated/ApolloComponents';
 import { CommentTypes } from '../../shared/types';
 import useUser from '../../hooks/useUser';
-import { gql } from '@apollo/client';
 
 interface Props {
   author: string;
@@ -56,38 +55,18 @@ export default function Comments({
               ...userData?.me,
             },
           };
-          const newCacheComment = cache.writeFragment({
-            fragment: gql`
-              fragment BSName on Photo {
-                id
-                payload
-                isMine
-                createdAt
-                user {
-                  id
-                  username
-                  avatar
-                }
-              }
-            `,
-            data: newComment,
-          });
-          console.log(newCacheComment);
           cache.modify({
             id: `Photo:${photoId}`,
             fields: {
               comments(prev) {
-                return [...prev, newCacheComment];
+                return [...prev, newComment];
               },
+              commentNumber(prev) {
+                console.log(prev);
+                return prev + 1;
+              }
             },
           });
-          // const id = result.data?.createComment.id;
-          // cache.modify({
-          //   id: `Comment:${id}`,
-          //   fields: {
-
-          //   }
-          // })
         }
       },
     });
@@ -102,6 +81,9 @@ export default function Comments({
       {comments.map((comment) => (
         <Comment
           key={comment.id}
+          isMine={comment.isMine}
+          photoId={photoId}
+          commentId={comment.id}
           username={comment.user?.username!}
           payload={comment.payload!}
         />
@@ -141,6 +123,7 @@ const PostCommentButton = styled.button`
   border: none;
   color: ${(props) => props.theme.accent};
   font-weight: 600;
+  cursor: pointer;
   &:disabled {
     opacity: 0.3;
   }

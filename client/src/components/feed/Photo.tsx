@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart as SolidHeart } from '@fortawesome/free-solid-svg-icons';
 import { FatText } from '../../components/shared';
 import { PhotoTypes } from '../../shared/types';
+import { Link } from 'react-router-dom';
 import { useToggleLikePhotoMutation } from '../../generated/ApolloComponents';
 import styled from 'styled-components';
 import Avatar from '../../components/Avatar';
@@ -47,8 +48,12 @@ export default function Photo({
   return (
     <PhotoContainer>
       <PhotoHeader>
-        <Avatar lg url={user?.avatar} />
-        <Username>{user?.username}</Username>
+        <Link to={`/users/${user?.username}`}>
+          <Avatar lg url={user?.avatar} />
+        </Link>
+        <Link to={`/users/${user?.username}`}>
+          <Username>{user?.username}</Username>
+        </Link>
       </PhotoHeader>
       <PhotoFile onClick={() => toggleLike(toggleLikeOptions)} src={file} />
       <PhotoData>
@@ -97,6 +102,12 @@ const PhotoHeader = styled.div`
   display: flex;
   align-items: center;
   border-bottom: 1px solid rgb(239, 239, 239);
+  a {
+    color: black;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 `;
 
 const Username = styled(FatText)`
