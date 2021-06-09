@@ -3,7 +3,7 @@ import { faCompass } from '@fortawesome/free-regular-svg-icons';
 import { faHome } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link } from 'react-router-dom';
-import { isLoggedInVar } from '../Apollo';
+import { isLoggedInVar, logUserOut } from '../graphql/Apollo';
 import { useReactiveVar } from '@apollo/client';
 import styled from 'styled-components';
 import routes from '../routes';
@@ -13,24 +13,33 @@ import Avatar from './Avatar';
 export default function Header() {
   const isLoggedIn = useReactiveVar(isLoggedInVar);
   const { data } = useUser();
-  
+
   return (
     <SHeader>
       <Wrapper>
         <Column>
-          <FontAwesomeIcon icon={faInstagram} size="2x" />
+          <Link to="/">
+            <FontAwesomeIcon icon={faInstagram} size="2x" />
+          </Link>
         </Column>
         <Column>
           {isLoggedIn ? (
             <IconContainer>
-              <Icon>
-                <FontAwesomeIcon icon={faHome} size="lg" />
-              </Icon>
+              <Link to="/">
+                <Icon>
+                  <FontAwesomeIcon icon={faHome} size="lg" />
+                </Icon>
+              </Link>
               <Icon>
                 <FontAwesomeIcon icon={faCompass} size="lg" />
               </Icon>
               <Icon>
-                <Avatar url={data?.me?.avatar}/>
+                <Link to={`/users/${data?.me.username}/`}>
+                  <Avatar url={data?.me?.avatar} />
+                </Link>
+              </Icon>
+              <Icon>
+                <button onClick={logUserOut}>Log out</button>
               </Icon>
             </IconContainer>
           ) : (
@@ -48,6 +57,9 @@ const IconContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  svg {
+    color: black;
+  }
 `;
 const SHeader = styled.header`
   width: 100%;
@@ -65,9 +77,16 @@ const Wrapper = styled.div`
   justify-content: space-between;
   align-items: center;
 `;
-const Column = styled.div``;
+const Column = styled.div`
+  a {
+    color: black;
+    &:active {
+      color: lightgray;
+    }
+  }
+`;
 const Icon = styled.span`
-  margin: 0 15px;
+  margin: 0 10px;
 `;
 
 const Button = styled.span`
