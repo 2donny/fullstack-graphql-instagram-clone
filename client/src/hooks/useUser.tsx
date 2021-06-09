@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { gql, useQuery, useReactiveVar } from '@apollo/client';
-import { isLoggedInVar, logUserOut } from '../Apollo';
+import { isLoggedInVar, logUserOut } from '../graphql/Apollo';
 import { UserTypes } from '../shared/types';
 
 const ME_QUERY = gql`
@@ -8,7 +8,6 @@ const ME_QUERY = gql`
     me {
       id
       username
-      name
       avatar
     }
   }
