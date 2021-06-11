@@ -4,9 +4,9 @@ import { protectedResolver } from '../../users/users.utils';
 const resolvers: Resolvers = {
   Mutation: {
     deleteComment: protectedResolver(
-      async (_, { CommentId }, { client, prismaDelete, loggedInUser }) => {
+      async (_, { commentId }, { client, prismaDelete, loggedInUser }) => {
         const Comment = await client.comment.findUnique({
-          where: { id: CommentId },
+          where: { id: commentId },
           select: { userId: true },
         });
         if (!Comment) {
@@ -23,7 +23,7 @@ const resolvers: Resolvers = {
 
         await client.comment.delete({
           where: {
-            id: CommentId
+            id: commentId
           }
         });
         

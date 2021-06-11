@@ -6,6 +6,7 @@ import { typeDefs, resolvers } from './schema';
 import { getUser } from './users/users.utils';
 import client from './client';
 import logger from 'morgan';
+import cors from 'cors';
 
 const apollo = new ApolloServer({
   typeDefs,
@@ -35,9 +36,15 @@ const apollo = new ApolloServer({
   },
 });
 
+const corsOptions = {
+  origin: 'http://localhost:3000',
+  credentials: true
+}
+
 const app = express();
 app.set('PORT', 4000);
 app.use(logger('dev'));
+app.use(cors(corsOptions));
 app.use('/static', express.static('uploads'));
 apollo.applyMiddleware({ app });
 

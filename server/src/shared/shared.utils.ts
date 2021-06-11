@@ -5,6 +5,7 @@ AWS.config.update({
     accessKeyId: process.env.AWS_KEY,
     secretAccessKey: process.env.AWS_SECRET,
   },
+  region: 'ap-northeast-2'
 });
 
 export const uploadToS3 = async (file, userId, folderName="uploads/") => {
@@ -14,7 +15,7 @@ export const uploadToS3 = async (file, userId, folderName="uploads/") => {
   
   const { Location } = await new AWS.S3()
     .upload({
-      Bucket: '2donny-instaclone-upload',
+      Bucket: 'insta-clone-again',
       Key: objectName,
       ACL: 'public-read',
       Body: readStream,

@@ -48,7 +48,7 @@ const resolvers: Resolvers = {
         .comments();
       return comments.length;
     },
-    comment: async ({ id }, _, { client }) => {
+    comments: async ({ id }, _, { client }) => {
       const comments = await client.photo
         .findUnique({ where: { id } })
         .comments({

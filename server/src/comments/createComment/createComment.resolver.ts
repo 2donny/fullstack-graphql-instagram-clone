@@ -15,7 +15,7 @@ const resolvers: Resolvers = {
             error: '사진이 존재하지 않습니다.',
           };
         }
-        await client.comment.create({
+        const commentId = await client.comment.create({
           data: {
             payload,
             user: {
@@ -29,10 +29,14 @@ const resolvers: Resolvers = {
               },
             },
           },
+          select: {
+            id: true
+          }
         });
         
         return {
-            ok: true
+            ok: true,
+            id: commentId.id
         }
       },
     ),

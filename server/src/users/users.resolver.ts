@@ -12,13 +12,27 @@ const resolvers: Resolvers = {
         return false;
       }
 
-      const cnt = await client.user.count({
+      const followingUser = await client.user.findFirst({
         where: {
           username: loggedInUser.username,
         },
+        select: {
+          followings: {
+            where: {
+              id,
+            },
+            select: {
+              id: true
+            }
+          },
+        },
       });
 
-      return cnt === 0 ? false : true;
+      console.log(followingUser.followings[0])
+      if(followingUser.followings[0]) {
+        return true;
+      }
+      return false;
     },
     photos: ({ id }, { page }, { client }) =>
       client.user
