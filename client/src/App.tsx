@@ -21,17 +21,21 @@ function App() {
         <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
           <GlobalStyles />
           <Switch>
+
             <Route path={routes.home} exact>
               {isLoggedIn ? <Home /> : <Login />}
             </Route>
+
             {!isLoggedIn ? (
               <Route path="/sign-up">
                 <SignUp />
               </Route>
             ) : null}
+
             <Route path="/users/:username">
               <Profile />
             </Route>
+            
             <Route>
               <NotFound />
             </Route>

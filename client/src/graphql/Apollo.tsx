@@ -12,10 +12,12 @@ const TOKEN = 'TOKEN';
 const DARK_MODE = 'DARK_MODE';
 
 export const isLoggedInVar = makeVar(Boolean(localStorage.getItem(TOKEN)));
+
 export const logUserIn = (token: string) => {
   localStorage.setItem(TOKEN, token);
   isLoggedInVar(true);
 };
+
 export const logUserOut = () => {
   localStorage.removeItem(TOKEN);
   window.location.reload();

@@ -5,7 +5,6 @@ import { Resolvers } from '../../types';
 const resolvers: Resolvers = {
   Mutation: {
     login: async (_, { username, password }, { client }) => {
-      console.log(username, password)
       // check username first
       const user = await client.user.findFirst({
         where: {

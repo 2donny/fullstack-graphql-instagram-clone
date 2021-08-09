@@ -7,7 +7,13 @@
 - [x] Architecture
 - [x] Dark mode
 - [x] Styles
-- [ ] Login / Sign up
+- [x] Login / Sign up
+
+- [x] Feed component
+- [x] Post comments component
+- [x] parsing hashtags
+- [ ] Follow 
+- [ ] Direct messages
 
 ## TIL
 
